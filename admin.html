@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-behavior-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PMR Portal Admin - Live Database</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f5f5f7; color: #1d1d1f; }
+        .apple-navbar { background-color: rgba(251, 251, 253, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col justify-center items-center pt-24 pb-12 px-4">
+
+    <nav class="fixed top-0 w-full z-50 apple-navbar border-b border-gray-200 h-16 flex items-center justify-center">
+        <div class="max-w-7xl w-full px-6 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/25/Logo_PMI.svg" alt="PMI" class="h-6 w-auto">
+                <span class="font-bold text-xs tracking-wider uppercase text-gray-800">PMR Database Console</span>
+            </div>
+            <a href="index.html" class="text-xs font-bold text-gray-500 hover:text-black">Lihat Web Utama ↗</a>
+        </div>
+    </nav>
+
+    <div class="w-full max-w-md bg-gray-200/60 p-1 rounded-2xl flex mb-6">
+        <button id="btn-tab-anggota" onclick="switchTab('tab-anggota')" class="w-1/2 py-2 text-xs font-bold rounded-xl bg-white shadow-sm text-gray-900 transition-all">Manajemen Anggota</button>
+        <button id="btn-tab-aktivitas" onclick="switchTab('tab-aktivitas')" class="w-1/2 py-2 text-xs font-bold rounded-xl text-gray-500 hover:text-gray-900 transition-all">Jurnal Kegiatan/Lomba</button>
+    </div>
+
+    <div id="tab-anggota" class="w-full max-w-md bg-white border border-gray-200 rounded-3xl p-8 shadow-sm">
+        <div class="text-center mb-6">
+            <span class="text-[10px] font-extrabold tracking-widest text-[#ff2d55] uppercase bg-red-50 px-3 py-1 rounded-full">Database Sinergi</span>
+            <h1 class="text-xl font-extrabold text-gray-900 mt-2">Tambah Anggota PMR</h1>
+        </div>
+        <form id="anggotaForm" class="space-y-4">
+            <div>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Nama Lengkap</label>
+                <input type="text" name="nama" required placeholder="Nama Lengkap Personel" class="w-full bg-[#fbfbfd] border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500">
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Jabatan Organisasi</label>
+                <select name="jabatan" class="w-full bg-[#fbfbfd] border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500">
+                    <option value="Anggota">Anggota</option>
+                    <option value="Ketua">Ketua</option>
+                    <option value="Wakil Ketua">Wakil Ketua</option>
+                    <option value="Sekretaris">Sekretaris</option>
+                    <option value="Bendahara">Bendahara</option>
+                    <option value="Pelatih">Pelatih</option>
+
+                </select>
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Angkatan</label>
+                <input type="number" name="angkatan" required placeholder="Contoh: 14" class="w-full bg-[#fbfbfd] border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500">
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Foto Personel</label>
+                <input type="file" id="fotoAnggotaFile" accept="image/*" required class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-red-50 file:text-[#ff2d55] hover:file:bg-red-100">
+            </div>
+            <button type="submit" class="w-full bg-gray-900 text-white py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-black transition-colors">Simpan Anggota</button>
+        </form>
+    </div>
+
+    <div id="tab-aktivitas" class="w-full max-w-md bg-white border border-gray-200 rounded-3xl p-8 shadow-sm hidden">
+        <div class="text-center mb-6">
+            <span class="text-[10px] font-extrabold tracking-widest text-amber-600 uppercase bg-amber-50 px-3 py-1 rounded-full">Jurnal Dokumentasi</span>
+            <h1 class="text-xl font-extrabold text-gray-900 mt-2">Upload Kegiatan & Lomba</h1>
+        </div>
+        <form id="aktivitasForm" class="space-y-4">
+            <div>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Nama Kegiatan / Judul Lomba</label>
+                <input type="text" name="keterangan" required placeholder="Contoh: Juara 1 Tandu Medis se-Kota" class="w-full bg-[#fbfbfd] border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500">
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Kategori Dokumen</label>
+                <select name="tipe" id="kategoriTipe" onchange="cekKategori()" class="w-full bg-[#fbfbfd] border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500">
+                    <option value="Kegiatan">Kegiatan Lapangan / UKS</option>
+                    <option value="Lomba">Perlombaan / Prestasi</option>
+                </select>
+            </div>
+            
+            <div id="wrapperTahun" class="hidden">
+                <label class="block text-[10px] font-bold text-amber-600 uppercase mb-1">Tanggal Raihan Prestasi</label>
+                <input type="date" name="tahun" id="inputTahun" class="w-full bg-[#fbfbfd] border border-amber-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500">
+            </div>  
+
+            <div>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Upload Foto Dokumentasi</label>
+                <input type="file" id="fotoAktivitasFile" accept="image/*" required class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100">
+            </div>
+            <button type="submit" class="w-full bg-amber-600 text-white py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-amber-700 transition-colors">Publish Jurnal</button>
+        </form>
+    </div>
+
+    <script src="base.js"></script>
+    <script>
+        // Ambil URL Apps Script dari file terpisah atau langsung tempel di sini jika base.js tidak dipakai
+        // Pastikan variabel SCRIPT_URL aktif dan mengarah ke Web App yang benar
+        //const SCRIPT_URL = "PASANG_URL_EXEC_APPS_SCRIPT_DISINI";
+
+        function cekKategori() {
+            const tipe = document.getElementById('kategoriTipe').value;
+            const wrapperTahun = document.getElementById('wrapperTahun');
+            const inputTahun = document.getElementById('inputTahun');
+            
+            if (tipe === "Lomba") {
+                wrapperTahun.classList.remove('hidden');
+                inputTahun.required = true;
+            } else {
+                wrapperTahun.classList.add('hidden');
+                inputTahun.required = false;
+                inputTahun.value = "";
+            }
+        }
+
+        function switchTab(tabId) {
+            document.getElementById('tab-anggota').classList.add('hidden');
+            document.getElementById('tab-aktivitas').classList.add('hidden');
+            document.getElementById('btn-tab-anggota').className = "w-1/2 py-2 text-xs font-bold rounded-xl text-gray-500 hover:text-gray-900 transition-all";
+            document.getElementById('btn-tab-aktivitas').className = "w-1/2 py-2 text-xs font-bold rounded-xl text-gray-500 hover:text-gray-900 transition-all";
+            
+            document.getElementById(tabId).classList.remove('hidden');
+            document.getElementById('btn-' + tabId).className = "w-1/2 py-2 text-xs font-bold rounded-xl bg-white shadow-sm text-gray-900 transition-all";
+        }
+
+        const toBase64 = file => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+
+        // ACTION FORM ANGGOTA (ANTI SPAM)
+        document.getElementById('anggotaForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button[type="submit"]');
+            btn.innerHTML = "MENGUNGGAH..."; btn.disabled = true; btn.style.opacity = "0.5";
+
+            try {
+                const fileInput = document.getElementById('fotoAnggotaFile').files[0];
+                const base64Image = await toBase64(fileInput);
+                const payload = {
+                    formType: "anggota",
+                    nama: this.elements['nama'].value,
+                    jabatan: this.elements['jabatan'].value,
+                    angkatan: this.elements['angkatan'].value,
+                    fotoData: base64Image
+                };
+                const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+                const result = await response.json();
+                if(result.status === 'success') { 
+                    alert('Anggota Baru Berhasil Tersimpan!'); 
+                    this.reset(); 
+                }
+            } catch (err) { 
+                alert('Terjadi kesalahan pengiriman data.'); 
+            } finally { 
+                btn.innerHTML = "SIMPAN ANGGOTA"; btn.disabled = false; btn.style.opacity = "1"; 
+            }
+        });
+
+        // ACTION FORM AKTIVITAS (ANTI SPAM + TANGGAL LENGKAP)
+        document.getElementById('aktivitasForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button[type="submit"]');
+            btn.innerHTML = "MENERBITKAN JURNAL..."; btn.disabled = true; btn.style.opacity = "0.5";
+
+            try {
+                const fileInput = document.getElementById('fotoAktivitasFile').files[0];
+                const base64Image = await toBase64(fileInput);
+                const payload = {
+                    formType: "aktivitas",
+                    keterangan: this.elements['keterangan'].value,
+                    tipe: this.elements['tipe'].value,
+                    tahun: this.elements['tahun'].value, // Mengirim string YYYY-MM-DD aman ke sheets
+                    fotoData: base64Image
+                };
+                const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+                const result = await response.json();
+                if(result.status === 'success') { 
+                    alert('Jurnal Berhasil Terpublikasi!'); 
+                    this.reset();
+                    document.getElementById('wrapperTahun').classList.add('hidden');
+                }
+            } catch (err) { 
+                alert('Gagal mempublikasikan aktivitas.'); 
+            } finally { 
+                btn.innerHTML = "PUBLISH JURNAL"; btn.disabled = false; btn.style.opacity = "1"; 
+            }
+        });
+    </script>
+</body>
+</html>
